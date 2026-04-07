@@ -4,8 +4,8 @@ public class Doctor extends Person {
     private ArrayList<Appointment> appointments = new ArrayList<>();
     private double yearsOfExperience;
 
-    public Doctor(String name, int age, Gender gender,double yearsOfExperience) {
-        super(name, age, gender);
+    public Doctor(long id,String name, int age, Gender gender,double yearsOfExperience) {
+        super(id,name, age, gender);
         this.yearsOfExperience=yearsOfExperience;
 
     }

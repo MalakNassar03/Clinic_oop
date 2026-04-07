@@ -5,8 +5,8 @@ public class Patient extends Person {
     // a patient can have multiple appointments
     private ArrayList<Appointment> appointments = new ArrayList<>();
 
-    public Patient(String name, int age, Gender gender) {
-        super(name, age, gender);
+    public Patient(long id,String name, int age, Gender gender) {
+        super(id, name, age, gender);
     }
 
 

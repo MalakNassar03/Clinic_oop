@@ -1,6 +1,6 @@
 import java.time.LocalDate;
 
-public class Appointment implements Schedulable,Cancellable{
+public class Appointment implements Schedulable{
     private Status status;
     private LocalDate date;
 
