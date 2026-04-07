@@ -1,10 +1,12 @@
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 public class Clinic {
     private ArrayList<Appointment> appointments = new ArrayList<>();
     private ArrayList<Patient> patients = new ArrayList<>();
     private ArrayList<Doctor> doctors = new ArrayList<>();
+    NotificationService<Person> service=NontificationServices();
 
     // add doctors to the clinic
     void addDoctor(Doctor doctor){
@@ -47,6 +49,14 @@ public class Clinic {
                 appointment.cancel();
                 //overloading method
                 System.out.println(appointment.cancel(appointment.getDoctor()));
+                CompletableFuture<String> doctorNotification= service.sendNotification(appointment.getDoctor(),"Notification appointment cancelled");
+                CompletableFuture<String> patientNotification=service.sendNotification(appointment.getPatient()," Notification appointment cancelled");
+                //combine
+                CompletableFuture.allOf(doctorNotification,patientNotification).join();
+                // print teh doctorNotification
+                System.out.println(doctorNotification.join());
+                System.out.println(patientNotification.join());
+
             }
         }
 
@@ -56,6 +66,14 @@ public class Clinic {
             //confirming the appointment
             if(a.equals(appointment) && a.getPatient().equals(patient)){
                 appointment.confirm();
+                CompletableFuture<String> doctorNotification= service.sendNotification(appointment.getDoctor(),"appointment is confirmed");
+                CompletableFuture<String> patientNotification=service.sendNotification(appointment.getPatient()," appointment is confirmed");
+                //combine
+                CompletableFuture.allOf(doctorNotification,patientNotification).join();
+                // print teh doctorNotification
+                System.out.println(doctorNotification.join());
+                System.out.println(patientNotification.join());
+
             }
         }
     }
@@ -85,7 +103,7 @@ public class Clinic {
     }
     //Task 2
     public List<String> getConfirmedAppointments(){
-        //method refrence used is static reference
+        //method refrence used is Instance Method
         return appointments.stream().filter(n->n.getStatus().equals(Status.CONFIRMED)).sorted(Comparator.comparing(n->n.getPatient().getName())).map(Appointment::Summary).collect(Collectors.toList());
     }
 
@@ -125,5 +143,21 @@ public class Clinic {
         return appointments.stream().filter(n->n.getDoctor().equals(doctor) && n.getStatus().equals(Status.SCHEDULED)).sorted(Comparator.comparing(Appointment::getDate)).findFirst();
     }
 
+//  Task 5
+    public NotificationService<Person> NontificationServices(){
+        return (person,message)->
+                CompletableFuture.supplyAsync(()-> {
+                    try {
+                        Thread.sleep(new Random().nextInt(1000));
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                    return "Notification sent to " + person.getClass() + ": " +person.getName() + ": " + message;
+
+                        }
+                );
+
+
+    }
 
 }

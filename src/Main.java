@@ -1,9 +1,12 @@
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class Main {
     public static void main(String[] args) {
-        Clinic clinic=new Clinic();
+        //constructor reference
+        Optional<Clinic> maybeClinic = Optional.empty();
+        Clinic clinic = maybeClinic.orElseGet(Clinic::new);
         //Doctor Object
         Doctor doctor1=new Doctor(1,"adam",36,Gender.MALE,5);
         Doctor doctor2=new Doctor(2,"jack",36,Gender.MALE,5);
@@ -63,11 +66,8 @@ public class Main {
 
         System.out.println("*****************STATUS CONFIRMED*******************");
         ArrayList<Appointment> confirmed = clinic.getApppointments(n-> n.getStatus().equals(Status.CONFIRMED));
-
-        for (Appointment a : confirmed) {
-            System.out.println(a.Summary());
-            System.out.println();
-        }
+//instance method reference on a particular object
+        confirmed.stream().map(Appointment::Summary).forEach(System.out::println);
 
         System.out.println("*******************BY DOCTOR********************");
         ArrayList<Appointment> byDoctor= clinic.getApppointments(n->n.getDoctor().equals(doctor1));
@@ -113,16 +113,14 @@ public class Main {
         System.out.println();
        clinic.getPatientByID(123).ifPresentOrElse(
                p-> System.out.println(p.introduce()),
-               ()-> System.out.println("patient Not found")
+               //Static method reference
+               Utils::patientNotFound
 
        );
 
         System.out.println();
-
+        //Instance method reference on an arbitrary object of a type
         System.out.println(clinic.getPendingAppointment(doctor2).map(Appointment::Summary).orElse("no pending appointments"));
-
-//      TASK 4:
-        System.out.println("*****************TASK4*******************");
 
 
 
