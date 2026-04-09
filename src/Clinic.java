@@ -62,9 +62,10 @@ public class Clinic {
 
 
     public void confirmAppointment(Appointment appointment,Patient patient){
-        for (Appointment a : appointments){
-            //confirming the appointment
-            if(a.equals(appointment) && a.getPatient().equals(patient)){
+        AppointmentFilter<Appointment> getfilter= (n)-> appointments.contains(n)  && n.getPatient().equals(patient);
+
+
+            if(getfilter.filterAppointments(appointment)){
                 appointment.confirm();
                 CompletableFuture<String> doctorNotification= service.sendNotification(appointment.getDoctor(),"appointment is confirmed");
                 CompletableFuture<String> patientNotification=service.sendNotification(appointment.getPatient()," appointment is confirmed");
@@ -74,7 +75,7 @@ public class Clinic {
                 System.out.println(doctorNotification.join());
                 System.out.println(patientNotification.join());
 
-            }
+
         }
     }
 
@@ -129,8 +130,6 @@ public class Clinic {
 
     public Optional<Doctor> getDoctorByName(String doctorName){
        return  doctors.stream().filter(n->n.getName().equals(doctorName)).findFirst();// find first returns and optional
-
-
     }
 
     public Optional<Patient> getPatientByID(long patientID){
