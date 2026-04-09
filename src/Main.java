@@ -71,10 +71,8 @@ public class Main {
 
         System.out.println("*******************BY DOCTOR********************");
         ArrayList<Appointment> byDoctor= clinic.getApppointments(n->n.getDoctor().equals(doctor1));
-        for (Appointment a : byDoctor) {
-            System.out.println(a.Summary());
-            System.out.println();
-        }
+        byDoctor.stream().map(Appointment::Summary).forEach(System.out::println);
+
 
         System.out.println("******************BY PATIENT********************");
         ArrayList<Appointment> byPatient=clinic.getApppointments(n->n.getPatient().equals(patient2));
